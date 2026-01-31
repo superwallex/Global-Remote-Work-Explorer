@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 Global Remote Work Explorer</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            bg: '#f8fafc', // Slate 50
+                            primary: '#0f172a', // Slate 900
+                            accent: '#10b981', // Emerald 500
+                            secondary: '#3b82f6', // Blue 500
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 40px -10px rgba(148, 163, 184, 0.2)',
+                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); 
+            min-height: 100vh;
+        }
+        
+        /* Hide scrollbar */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Custom Scrollbar for Modal */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Modal Animation */
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-animate {
+            animation: modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        canvas { font-family: 'Inter', sans-serif; }
+        
+        .strategy-content ul { list-style-type: disc; padding-left: 1.25rem; margin-bottom: 1.5rem; }
+        .strategy-content ol { list-style-type: decimal; padding-left: 1.25rem; margin-bottom: 1.5rem; }
+        .strategy-content li { margin-bottom: 0.5rem; color: #475569; font-size: 0.925rem; }
+        .strategy-content strong { color: #1e293b; font-weight: 600; }
+        .strategy-content h5 { 
+            color: #0f172a; 
+            font-weight: 700; 
+            margin-top: 1.5rem; 
+            margin-bottom: 0.75rem; 
+            display: flex; 
+            align-items: center; 
+            font-size: 1rem;
+        }
+        .strategy-content i { margin-right: 0.6rem; }
+        
+        /* Specific header colors */
+        .header-process i { color: #4f46e5; } /* Indigo */
+        .header-pitfall i { color: #e11d48; } /* Rose */
+    </style>
+</head>
+<body class="text-slate-700 antialiased selection:bg-indigo-100 selection:text-indigo-700 pb-20">
+
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-40 backdrop-blur-md bg-white/80 border-b border-slate-200/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-lg shadow-slate-200">
+                        <i class="fa-solid fa-globe text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold tracking-tight text-slate-900">Remote<span class="text-indigo-600">Explorer</span></h1>
+                        <p class="text-[10px] text-slate-500 font-semibold tracking-wider uppercase">Global Edition 2026</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center gap-4">
+                    <span class="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
+                        <i class="fa-solid fa-check-circle mr-1"></i> Verified Sources
+                    </span>
+                    <a href="https://x.com/SuperWaLLEAI" target="_blank" class="px-4 py-2 bg-slate-900 text-white text-sm font-bold rounded-lg hover:bg-slate-800 transition shadow-md flex items-center gap-2">
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+                        Follow Super WALL-E
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
+
+        <!-- Hero & Stats Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+            <!-- Left: Text -->
+            <div class="lg:col-span-1 flex flex-col justify-center">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 text-xs font-bold mb-6 w-fit">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+                    </span>
+                    2026 Trend Report
+                </div>
+                <h2 class="text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-6">
+                    Unlock Your Next <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-cyan-500">High-Paying Remote Role</span>
+                </h2>
+                <p class="text-slate-500 mb-8 leading-relaxed text-lg">
+                    Stop searching through junk. We've curated the top 9 verified platforms for global talent—from elite coding gigs to flexible micro-tasks. 
+                </p>
+                <div class="flex gap-6 border-t border-slate-100 pt-6">
+                    <div>
+                        <span class="block text-3xl font-extrabold text-slate-900">$100<span class="text-sm align-top">+</span></span>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wide">Top Hr Rate</span>
+                    </div>
+                    <div class="w-px bg-slate-200"></div>
+                    <div>
+                        <span class="block text-3xl font-extrabold text-slate-900">USD</span>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wide">Payout Currency</span>
+                    </div>
+                    <div class="w-px bg-slate-200"></div>
+                    <div>
+                        <span class="block text-3xl font-extrabold text-slate-900">9</span>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wide">Elite Platforms</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Charts -->
+            <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Salary Chart -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-sm font-bold text-slate-700 flex items-center">
+                            <i class="fa-solid fa-sack-dollar text-emerald-500 mr-2"></i> Earning Potential (USD/Hr)
+                        </h3>
+                    </div>
+                    <div class="h-48 relative">
+                        <canvas id="salaryChart"></canvas>
+                    </div>
+                </div>
+                <!-- Category Chart -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                    <h3 class="text-sm font-bold text-slate-700 mb-4 flex items-center">
+                        <i class="fa-solid fa-layer-group text-indigo-500 mr-2"></i> Opportunity Type
+                    </h3>
+                    <div class="h-48 relative flex justify-center">
+                        <canvas id="typeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="sticky top-20 z-30 bg-white/80 backdrop-blur-xl rounded-2xl shadow-sm border border-slate-200 p-2 mb-8 flex flex-wrap gap-2">
+            <button onclick="filterPlatforms('all')" class="filter-btn active px-4 py-2 rounded-xl text-sm font-bold transition-all border border-transparent">
+                All Platforms
+            </button>
+            <button onclick="filterPlatforms('high_pay')" class="filter-btn px-4 py-2 rounded-xl text-sm font-bold transition-all border border-transparent text-slate-500 hover:bg-slate-50">
+                💰 High Pay ($40+)
+            </button>
+            <button onclick="filterPlatforms('tech')" class="filter-btn px-4 py-2 rounded-xl text-sm font-bold transition-all border border-transparent text-slate-500 hover:bg-slate-50">
+                💻 Tech & AI
+            </button>
+            <button onclick="filterPlatforms('beginner')" class="filter-btn px-4 py-2 rounded-xl text-sm font-bold transition-all border border-transparent text-slate-500 hover:bg-slate-50">
+                🌱 Beginner Friendly
+            </button>
+            <button onclick="filterPlatforms('creative')" class="filter-btn px-4 py-2 rounded-xl text-sm font-bold transition-all border border-transparent text-slate-500 hover:bg-slate-50">
+                🎨 Creative
+            </button>
+        </div>
+
+        <!-- Grid Section -->
+        <div id="platformGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+            <!-- Cards will be injected here via JS -->
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-200 bg-white pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="mb-4">
+                <i class="fa-solid fa-earth-americas text-4xl text-indigo-100"></i>
+            </div>
+            <p class="text-slate-400 text-sm font-medium">
+                © 2026 Global Remote Work Explorer. Built by <span class="text-slate-900 font-bold">Super WALL-E</span>.
+            </p>
+            <p class="text-slate-300 text-xs mt-2">Data curated from Reddit (r/remotejobs, r/beermoney) & Trustpilot.</p>
+        </div>
+    </footer>
+
+    <!-- Modal -->
+    <div id="detailModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
+        
+        <!-- Modal Content -->
+        <div class="relative bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden modal-animate flex flex-col max-h-[90vh]">
+            <!-- Header -->
+            <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center flex-shrink-0">
+                <div class="flex items-center gap-4">
+                    <div id="modalIcon" class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shadow-sm border border-slate-100">
+                        <!-- Icon injected via JS -->
+                    </div>
+                    <div>
+                        <h3 id="modalTitle" class="text-xl font-bold text-slate-900">--</h3>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span id="modalTier" class="text-[10px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider text-white">--</span>
+                            <span id="modalCategory" class="text-xs font-semibold text-slate-500">--</span>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-600 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Scrollable Body -->
+            <div class="p-8 overflow-y-auto custom-scrollbar">
+                
+                <!-- Metrics -->
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+                        <span class="text-xs text-slate-400 font-bold uppercase block mb-1">Avg. Pay</span>
+                        <span id="modalSalary" class="text-lg font-bold text-slate-800 font-mono">--</span>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+                        <span class="text-xs text-slate-400 font-bold uppercase block mb-1">Difficulty</span>
+                        <div class="flex items-center gap-2 mt-1">
+                            <div class="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
+                                <div id="modalDifficultyBar" class="h-full rounded-full bg-emerald-500" style="width: 0%"></div>
+                            </div>
+                            <span id="modalDifficultyText" class="text-xs font-bold text-slate-600">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="mb-8">
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">About Platform</h4>
+                    <p id="modalDesc" class="text-slate-600 leading-relaxed">--</p>
+                </div>
+
+                <!-- Strategy Box -->
+                <div class="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-xl p-6 border border-indigo-100 relative">
+                    <h4 class="text-sm font-bold text-slate-900 mb-6 flex items-center border-b border-indigo-100 pb-3">
+                        <i class="fa-solid fa-lightbulb text-indigo-500 mr-2"></i> Application Strategy & Tips
+                    </h4>
+                    <div id="modalStrategy" class="text-sm strategy-content text-slate-600 space-y-4">
+                        <!-- Content Injected Here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="p-5 border-t border-slate-100 bg-white flex justify-end flex-shrink-0">
+                <a id="modalLink" href="#" target="_blank" class="w-full sm:w-auto text-center px-6 py-3 bg-slate-900 text-white font-bold rounded-xl hover:bg-indigo-600 hover:shadow-lg hover:shadow-indigo-200 transition-all duration-300 flex items-center justify-center gap-2">
+                    <span>Visit Official Site</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =========================================================================
+        // DATA CONFIGURATION AREA
+        // =========================================================================
+        const APP_DATA = [
+            // --- TIER S: Elite / High Pay ---
+            {
+                name: "DataAnnotation",
+                category: "AI Training & Coding",
+                salary: "$20 - $40+/hr",
+                tier: "Tier S",
+                difficulty: "Hard",
+                tags: ["high_pay", "tech", "coding"],
+                desc: "The current gold standard for remote AI work. You perform tasks like coding evaluation, creative writing, and fact-checking to train LLMs. No interviews, just assessments.",
+                strategy: `
+                    <div class="header-process">
+                        <h5><i class="fa-solid fa-list-check"></i> Application Blueprint</h5>
+                        <ul class="list-decimal pl-5">
+                            <li><strong>Initial Sign-up:</strong> Use a clean IP address from a supported country (US, UK, CA, AU, NZ). Do not use a VPN.</li>
+                            <li><strong>Starter Assessment:</strong> Immediately after signing up, you will face a 45-minute core assessment. This tests creative writing and logic. Take your time; accuracy is key.</li>
+                            <li><strong>The Wait:</strong> If you pass, you will see projects on your dashboard within 3-7 days. If the dashboard remains empty for weeks, you likely did not pass.</li>
+                        </ul>
+                    </div>
+                    <div class="header-pitfall">
+                        <h5><i class="fa-solid fa-triangle-exclamation"></i> Red Flags & Pro Tips</h5>
+                        <ul class="list-disc pl-5">
+                            <li><strong>Strictly No AI:</strong> Do not use ChatGPT to answer assessment questions. Their detection system is aggressive and will ban you instantly.</li>
+                            <li><strong>Coding Qualification:</strong> If you know Python, ensure you take the separate coding qualification test to unlock $40/hr projects.</li>
+                            <li><strong>Payment:</strong> Ensure your PayPal email matches your registration email exactly.</li>
+                        </ul>
+                    </div>
+                `,
+                link: "https://www.dataannotation.tech/"
+            },
+            {
+                name: "Toptal",
+                category: "Elite Freelance Network",
+                salary: "$60 - $150+/hr",
+                tier: "Tier S",
+                difficulty: "Expert",
+                tags: ["high_pay", "tech", "design"],
+                desc: "An exclusive network for the top 3% of freelance software developers, designers, finance experts, and product managers. Once accepted, jobs come to you.",
+                strategy: `
+                    <div class="header-process">
+                        <h5><i class="fa-solid fa-list-check"></i> Application Blueprint</h5>
+                        <ol class="list-decimal pl-5">
+                            <li><strong>Language Screening:</strong> A video call with a recruiter to test your English communication and personality. Be professional and articulate.</li>
+                            <li><strong>Technical Assessment:</strong> A timed algorithmic challenge (often Codility for devs) or a portfolio review (for designers). Speed and edge-case handling matter.</li>
+                            <li><strong>Live Screening:</strong> You will solve a problem live while sharing your screen with a senior Toptal screener. Explain your thought process out loud.</li>
+                            <li><strong>Test Project:</strong> A final real-world take-home project to prove your practical skills.</li>
+                        </ol>
+                    </div>
+                    <div class="header-pitfall">
+                        <h5><i class="fa-solid fa-triangle-exclamation"></i> Red Flags & Pro Tips</h5>
+                        <ul class="list-disc pl-5">
+                            <li><strong>Communication is Key:</strong> You can fail even with perfect code if you are silent or rude during the interview. Soft skills are 50% of the grade.</li>
+                            <li><strong>No Bidding Wars:</strong> Once in, you set your rate. Don't undersell yourself; clients expect premium rates for premium talent.</li>
+                        </ul>
+                    </div>
+                `,
+                link: "https://www.toptal.com/"
+            },
+            {
+                name: "Prolific",
+                category: "Academic Research",
+                salary: "$15 - $20/hr",
+                tier: "Tier S",
+                difficulty: "Medium",
+                tags: ["beginner", "survey"],
+                desc: "A platform for academic research originating from Oxford University. Unlike commercial survey sites, Prolific treats participants ethically with fair pay and no screen-outs.",
+                strategy: `
+                    <div class="header-process">
+                        <h5><i class="fa-solid fa-list-check"></i> Application Blueprint</h5>
+                        <ol class="list-decimal pl-5">
+                            <li><strong>Join Waitlist:</strong> Sign up immediately. The queue can be long. If you have a university email (.edu), use it to potentially speed up approval.</li>
+                            <li><strong>ID Verification:</strong> Once invited, you must complete a biometric ID check via Onfido (Passport/Driver's License).</li>
+                            <li><strong>Profile Completion:</strong> Fill out the "About You" section 100%. This demographic data is how researchers find you.</li>
+                        </ol>
+                    </div>
+                    <div class="header-pitfall">
+                        <h5><i class="fa-solid fa-triangle-exclamation"></i> Red Flags & Pro Tips</h5>
+                        <ul class="list-disc pl-5">
+                            <li><strong>VPN Ban:</strong> Never log in with a VPN. You will see a "PEC-SUB-0002" error and be banned.</li>
+                            <li><strong>Attention Checks:</strong> Researchers include trick questions (e.g., "Select 'Strongly Agree'"). Missing these leads to rejection and account suspension.</li>
+                            <li><strong>Assistant Extension:</strong> Install the "Prolific Assistant" browser extension to catch high-paying studies before they fill up.</li>
+                        </ul>
+                    </div>
+                `,
+                link: "https://www.prolific.com/"
+            },
+            
+            // --- TIER A: Reliable / Volume ---
+            {
+                name: "Upwork",
+                category: "Global Marketplace",
+                salary: "Project Based",
+                tier: "Tier A",
+                difficulty: "Hard",
+                tags: ["tech", "creative", "high_pay"],
+                desc: "The world's largest freelancing marketplace. Highly competitive, but offers the highest ceiling for building a long-term freelance business.",
+                strategy: `
+                    <div class="header-process">
+                        <h5><i class="fa-solid fa-list-check"></i> Application Blueprint</h5>
+                        <ol class="list-decimal pl-5">
+                            <li><strong>Profile Creation:</strong> Create a niche profile (e.g., "Shopify Developer" instead of "Web Developer"). Add a professional headshot.</li>
+                            <li><strong>Buy Connects:</strong> You need virtual currency ("Connects") to apply for jobs. Budget ~$15/month for this investment.</li>
+                            <li><strong>Submit Proposals:</strong> Write custom proposals. The first two lines are crucial—address the client's specific problem immediately.</li>
+                        </ol>
+                    </div>
+                    <div class="header-pitfall">
+                        <h5><i class="fa-solid fa-triangle-exclamation"></i> Red Flags & Pro Tips</h5>
+                        <ul class="list-disc pl-5">
+                            <li><strong>Telegram Scams:</strong> Any client asking to chat on Telegram/WhatsApp before a contract is started is a scammer. Report them.</li>
+                            <li><strong>JSS Score:</strong> Guard your "Job Success Score" with your life. Take small, easy jobs first to build 5-star feedback.</li>
+                            <li><strong>Tax Form:</strong> Non-US residents must complete the W-8BEN form in settings to avoid 30% withholding tax.</li>
+                        </ul>
+                    </div>
+                `,
+                link: "https://www.upwork.com/"
+            },
+            {
+                name: "UserTesting",
+                category: "UX Testing",
+                salary: "$10 / 20min",
+                tier: "Tier A",
+                difficulty: "Easy",
+                tags: ["beginner", "creative"],
+                desc: "Get paid to record your screen and voice while testing websites and apps. Companies want to hear your raw thoughts as you navigate their products.",
+                strategy: `
+                    <div class="header-process">
+                        <h5><i class="fa-solid fa-list-check"></i> Application Blueprint</h5>
+                        <ol class="list-decimal pl-5">
+                            <li><strong>Registration:</strong> Sign up with your PayPal email.</li>
+                            <li><strong>Practice Test:</strong> You will be asked to record a sample test. This is the main gatekeeper. Ensure you speak clearly and continuously.</li>
+                            <li><strong>Qualification:</strong> Once approved, keep the dashboard open to catch "Screeners" (short surveys to see if you fit the demographic).</li>
+                        </ol>
+                    </div>
+                    <div class="header-pitfall">
+                        <h5><i class="fa-solid fa-triangle-exclamation"></i> Red Flags & Pro Tips</h5>
+                        <ul class="list-disc pl-5">
+                            <li><strong>Think Aloud:</strong> Silence is the enemy. Verbalize every thought: "I am clicking here because...", "I expected this button to be red...".</li>
+                            <li><strong>Audio Quality:</strong> Use a decent USB microphone. Bad audio leads to low ratings, and low ratings mean no more tests.</li>
+                            <li><strong>Privacy:</strong> Never show your real credit card info during a test, even if a dummy site asks for it.</li>
+                        </ul>
+                    </div>
+                `,
+                link: "https://www.usertesting.com/"
+            },
+            {
+                name: "uTest",
+                category: "QA Testing",
+                salary: "$15 - $25/hr",
+                tier: "Tier A",
+                difficulty: "Medium",
+                tags: ["tech", "beginner"],
+                desc: "Owned by Applause, uTest is the premier community for freelance software testing. You find bugs in unreleased apps and websites.",
+                strategy: `
+                    <div class="header-process">
+                        <h5><i class="fa-solid fa-list-check"></i> Application Blueprint</h5>
+                        <ol class="list-decimal pl-5">
+                            <li><strong>Create Profile:</strong> List all your devices (Phone, Laptop, Smart TV). The more devices, the more invites.</li>
+                            <li><strong>uTest Academy:</strong> You must complete the unpaid "Academy" training cycles. This teaches you how to capture logs and format bug reports.</li>
+                            <li><strong>Receive Invites:</strong> Once rated, you will get email invites to paid "Test Cycles".</li>
+                        </ol>
+                    </div>
+                    <div class="header-pitfall">
+                        <h5><i class="fa-solid fa-triangle-exclamation"></i> Red Flags & Pro Tips</h5>
+                        <ul class="list-disc pl-5">
+                            <li><strong>Bug Reports:</strong> Follow the format strictly. A rejected bug hurts your rating. Always attach the required logs and screenshots.</li>
+                            <li><strong>Claiming Slots:</strong> Test slots are limited. Accept invites immediately.</li>
+                            <li><strong>TTL (Time To Live):</strong> Some bugs are already reported. Check the "Known Issues" list to avoid duplicate rejections.</li>
+                        </ul>
+                    </div>
+                `,
+                link: "https://www.utest.com/"
+            },
+            {
+                name: "User Interviews",
+                category: "Professional Research",
+                salary: "$50 - $100/hr",
+                tier: "Tier A",
+                difficulty: "Medium",
+                tags: ["high_pay", "creative"],
+                desc: "High-paying 1-on-1 Zoom interviews. Researchers look for specific professionals (e.g., 'Salesforce Admins' or 'Dentists').",
+                strategy: `
+                    <div class="header-process">
+                        <h5><i class="fa-solid fa-list-check"></i> Application Blueprint</h5>
+                        <ol class="list-decimal pl-5">
+                            <li><strong>Link LinkedIn:</strong> Sign up and link your LinkedIn profile. This instantly verifies your professional background.</li>
+                            <li><strong>Browse Studies:</strong> Filter studies by your profession or consumer habits.</li>
+                            <li><strong>Take Screener:</strong> Fill out the short survey to confirm eligibility. Be honest; consistency matters.</li>
+                            <li><strong>Schedule:</strong> If selected, pick a time slot for the Zoom call.</li>
+                        </ol>
+                    </div>
+                    <div class="header-pitfall">
+                        <h5><i class="fa-solid fa-triangle-exclamation"></i> Red Flags & Pro Tips</h5>
+                        <ul class="list-disc pl-5">
+                            <li><strong>Don't Fake It:</strong> Researchers are experts. If you claim to be a software architect but can't speak the lingo, you will be flagged.</li>
+                            <li><strong>Cancellation Policy:</strong> Never ghost a session. A single no-show can get you banned from future high-paying studies.</li>
+                            <li><strong>Tech Check:</strong> Test your Zoom and Mic 10 minutes before the call.</li>
+                        </ul>
+                    </div>
+                `,
+                link: "https://www.userinterviews.com/"
+            },
+
+            // --- TIER B: Beginner / Fast Cash ---
+            {
+                name: "Clickworker",
+                category: "Micro-tasks & UHRS",
+                salary: "$10 - $15/hr",
+                tier: "Tier B",
+                difficulty: "Easy",
+                tags: ["beginner", "tech"],
+                desc: "A crowdsourcing platform famous for providing access to UHRS (Universal Human Relevance System) - a partner platform with endless small data tasks.",
+                strategy: `
+                    <div class="header-process">
+                        <h5><i class="fa-solid fa-list-check"></i> Application Blueprint</h5>
+                        <ol class="list-decimal pl-5">
+                            <li><strong>Sign Up:</strong> Complete your profile and add native languages.</li>
+                            <li><strong>UHRS Assessment:</strong> Navigate to "Assessments". You must pass the "UHRS I" and "UHRS II" qualifications (English logic tests).</li>
+                            <li><strong>Create LiveID:</strong> You will be assigned a unique Microsoft Live ID (e.g., @cw.uhrs.com) to access the UHRS work portal.</li>
+                        </ol>
+                    </div>
+                    <div class="header-pitfall">
+                        <h5><i class="fa-solid fa-triangle-exclamation"></i> Red Flags & Pro Tips</h5>
+                        <ul class="list-disc pl-5">
+                            <li><strong>Speeding Kills:</strong> If you work too fast, UHRS assumes you are spamming and will ban you temporarily. Maintain a realistic pace.</li>
+                            <li><strong>Spam Accuracy:</strong> Tasks contain "Gold Hits" (hidden test questions). If your accuracy drops below ~80%, you will be kicked from the task.</li>
+                            <li><strong>Payment:</strong> Setup Payoneer early. Minimum payout is €10.</li>
+                        </ul>
+                    </div>
+                `,
+                link: "https://www.clickworker.com/"
+            },
+            {
+                name: "Contra",
+                category: "Commission-Free Network",
+                salary: "Set Your Rate",
+                tier: "Tier B",
+                difficulty: "Medium",
+                tags: ["creative", "tech"],
+                desc: "The modern alternative to Upwork. It's commission-free for freelancers (clients pay the fee) and focuses on high-quality visual portfolios.",
+                strategy: `
+                    <div class="header-process">
+                        <h5><i class="fa-solid fa-list-check"></i> Application Blueprint</h5>
+                        <ol class="list-decimal pl-5">
+                            <li><strong>Build Portfolio:</strong> Contra is visual-heavy. Upload your best projects with high-res cover images.</li>
+                            <li><strong>Define Services:</strong> Instead of just a bio, create "Services" (e.g., "Logo Design - $500"). This makes you "shoppable".</li>
+                            <li><strong>Get Vetted:</strong> Apply for "Contra Verified" status to get a badge and boost visibility in search results.</li>
+                        </ol>
+                    </div>
+                    <div class="header-pitfall">
+                        <h5><i class="fa-solid fa-triangle-exclamation"></i> Red Flags & Pro Tips</h5>
+                        <ul class="list-disc pl-5">
+                            <li><strong>Pricing Power:</strong> Since they don't take a 20% cut like Upwork, you can price competitively while earning more.</li>
+                            <li><strong>Bring Clients:</strong> Use Contra to invoice your existing clients. It handles the contract and billing for free.</li>
+                            <li><strong>Activity:</strong> Keep your "Status" updated (e.g., "Open to Work") to appear in recruiter searches.</li>
+                        </ul>
+                    </div>
+                `,
+                link: "https://contra.com/"
+            }
+        ];
+
+        let platforms = APP_DATA; // Init data
+
+        // =========================================================================
+        // LOGIC AREA
+        // =========================================================================
+
+        // 1. Chart Initialization
+        function initCharts() {
+            // Salary Chart
+            const ctxSalary = document.getElementById('salaryChart').getContext('2d');
+            new Chart(ctxSalary, {
+                type: 'bar',
+                data: {
+                    labels: ['Micro-tasks', 'Surveys', 'QA/Testing', 'AI Training', 'Elite Freelance'],
+                    datasets: [{
+                        label: 'Avg. Hourly Rate (USD)',
+                        data: [12, 18, 25, 35, 80],
+                        backgroundColor: ['#e2e8f0', '#94a3b8', '#60a5fa', '#10b981', '#4f46e5'],
+                        borderRadius: 6,
+                        barPercentage: 0.6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { borderDash: [4, 4] } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // Type Chart
+            const ctxType = document.getElementById('typeChart').getContext('2d');
+            new Chart(ctxType, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Tech/AI', 'Creative/Freelance', 'Testing/QA', 'Micro/Survey'],
+                    datasets: [{
+                        data: [3, 3, 2, 1],
+                        backgroundColor: ['#10b981', '#4f46e5', '#f59e0b', '#64748b'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { position: 'right', labels: { boxWidth: 10, font: { size: 11 } } }
+                    }
+                }
+            });
+        }
+
+        // 2. Helpers
+        function getIcon(category) {
+            if (category.includes("AI") || category.includes("Tech")) return '<i class="fa-solid fa-robot text-emerald-500"></i>';
+            if (category.includes("Freelance") || category.includes("Elite")) return '<i class="fa-solid fa-laptop-code text-indigo-500"></i>';
+            if (category.includes("Research") || category.includes("Survey")) return '<i class="fa-solid fa-clipboard-question text-blue-500"></i>';
+            if (category.includes("Testing") || category.includes("QA")) return '<i class="fa-solid fa-vial text-orange-500"></i>';
+            return '<i class="fa-solid fa-briefcase text-slate-400"></i>';
+        }
+
+        function getDifficultyColor(level) {
+            if (level === 'Easy') return 'bg-emerald-400';
+            if (level === 'Medium') return 'bg-amber-400';
+            if (level === 'Hard') return 'bg-orange-500';
+            return 'bg-rose-600'; // Expert
+        }
+
+        function getDifficultyWidth(level) {
+            if (level === 'Easy') return '33%';
+            if (level === 'Medium') return '66%';
+            return '100%';
+        }
+
+        function getTierColor(tier) {
+            if (tier === 'Tier S') return 'bg-indigo-600';
+            if (tier === 'Tier A') return 'bg-emerald-600';
+            return 'bg-slate-500';
+        }
+
+        // 3. Render
+        const grid = document.getElementById('platformGrid');
+
+        function renderCards(filterType) {
+            grid.innerHTML = '';
+            
+            const filtered = platforms.filter(p => {
+                if(filterType === 'all') return true;
+                return p.tags.includes(filterType);
+            });
+
+            filtered.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = `bg-white rounded-2xl p-6 shadow-card border border-slate-100 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col h-full group`;
+                card.onclick = () => openModal(item);
+                
+                // Animation delay
+                card.style.opacity = '0';
+                card.style.animation = `modalIn 0.5s ease-out forwards ${index * 0.05}s`;
+
+                // Tier Badge
+                let tierBadge = `<span class="text-[10px] font-bold px-2 py-1 rounded text-white ${getTierColor(item.tier)} mb-2 inline-block">${item.tier}</span>`;
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-xl group-hover:bg-indigo-50 transition-colors border border-slate-100">
+                                ${getIcon(item.category)}
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-lg leading-tight group-hover:text-indigo-600 transition-colors">${item.name}</h3>
+                                <p class="text-xs text-slate-400 font-medium mt-0.5">${item.category}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-slate-500 mb-6 leading-relaxed flex-grow line-clamp-3">${item.desc}</p>
+                    
+                    <div class="mt-auto pt-4 border-t border-slate-50 flex justify-between items-end">
+                        <div>
+                            ${tierBadge}
+                            <div class="text-sm font-bold text-slate-800 font-mono">${item.salary}</div>
+                        </div>
+                        <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // 4. Filters
+        function filterPlatforms(type) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
+                btn.classList.add('text-slate-500', 'hover:bg-slate-50');
+                if(btn.getAttribute('onclick').includes(type)) {
+                    btn.classList.remove('text-slate-500', 'hover:bg-slate-50');
+                    btn.classList.add('bg-indigo-600', 'text-white', 'shadow-md');
+                }
+            });
+            renderCards(type);
+        }
+
+        // 5. Modal
+        const modal = document.getElementById('detailModal');
+
+        function openModal(item) {
+            document.getElementById('modalTitle').innerText = item.name;
+            document.getElementById('modalCategory').innerText = item.category;
+            document.getElementById('modalSalary').innerText = item.salary;
+            document.getElementById('modalTier').innerText = item.tier;
+            document.getElementById('modalTier').className = `text-[10px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider text-white ${getTierColor(item.tier)}`;
+            
+            document.getElementById('modalDesc').innerText = item.desc;
+            document.getElementById('modalStrategy').innerHTML = item.strategy;
+            document.getElementById('modalLink').href = item.link;
+            
+            // Icon
+            const iconContainer = document.getElementById('modalIcon');
+            iconContainer.innerHTML = getIcon(item.category);
+            
+            // Difficulty Bar
+            document.getElementById('modalDifficultyText').innerText = item.difficulty;
+            const diffBar = document.getElementById('modalDifficultyBar');
+            diffBar.className = `h-full rounded-full transition-all duration-500 ${getDifficultyColor(item.difficulty)}`;
+            diffBar.style.width = '0%';
+            setTimeout(() => {
+                diffBar.style.width = getDifficultyWidth(item.difficulty);
+            }, 100);
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Init
+        window.addEventListener('load', () => {
+            initCharts();
+            // Set active filter style
+            const defaultBtn = document.querySelector('.filter-btn.active');
+            defaultBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-md');
+            
+            renderCards('all');
+        });
+
+    </script>
+</body>
+</html>
